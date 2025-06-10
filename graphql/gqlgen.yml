@@ -1,0 +1,8 @@
+schema: schema.graphql
+
+models:
+  Account:
+    model: github.com/VivianRMS/go-ecommerce-micro/graphql.Account
+    fields:
+      orders:
+        resolver: true
