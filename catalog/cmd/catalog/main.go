@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/VivianRMS/go-ecommerce-micro/account"
+	"github.com/VivianRMS/go-ecommerce-micro/catalog"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/tinrab/retry"
 	"log"
@@ -14,21 +14,21 @@ type Config struct {
 
 func main() {
 	var cfg Config
-	err := envconfig.Process("", &cfg)
-	if err != nil {
+	if err := envconfig.Process("", &cfg); err != nil {
 		log.Fatal(err)
 	}
 
-	var r account.Repository
+	var r catalog.Repository
 	retry.ForeverSleep(2*time.Second, func(_ int) (err error) {
-		r, err = account.NewPostgresRepository(cfg.DatabaseURL)
+		r, err = catalog.NewElasticRepository(cfg.DatabaseURL)
 		if err != nil {
 			log.Println(err)
 		}
 		return
 	})
 	defer r.Close()
+
 	log.Println("Listening on port 8080...")
-	s := account.NewService(r)
-	log.Fatal(account.ListenGRPC(s, 8080))
+	s := catalog.NewService(r)
+	log.Fatal(catalog.ListenGRPC(s, 8080))
 }
