@@ -12,7 +12,7 @@ type Client struct {
 	service pb.CatalogServiceClient
 }
 
-func newClient(url string) (*Client, error) {
+func NewClient(url string) (*Client, error) {
 	opts := []grpc.DialOption{
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	}
