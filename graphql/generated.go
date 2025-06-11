@@ -55,9 +55,9 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateOrder    func(childComplexity int, order OrderInput) int
-		CreateProduct  func(childComplexity int, product ProductInput) int
-		CreatedAccount func(childComplexity int, account AccountInput) int
+		CreateAccount func(childComplexity int, account AccountInput) int
+		CreateOrder   func(childComplexity int, order OrderInput) int
+		CreateProduct func(childComplexity int, product ProductInput) int
 	}
 
 	Order struct {
@@ -92,7 +92,7 @@ type AccountResolver interface {
 	Orders(ctx context.Context, obj *Account) ([]*Order, error)
 }
 type MutationResolver interface {
-	CreatedAccount(ctx context.Context, account AccountInput) (*Account, error)
+	CreateAccount(ctx context.Context, account AccountInput) (*Account, error)
 	CreateProduct(ctx context.Context, product ProductInput) (*Product, error)
 	CreateOrder(ctx context.Context, order OrderInput) (*Order, error)
 }
@@ -141,6 +141,18 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.complexity.Account.Orders(childComplexity), true
 
+	case "Mutation.createAccount":
+		if e.complexity.Mutation.CreateAccount == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createAccount_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateAccount(childComplexity, args["account"].(AccountInput)), true
+
 	case "Mutation.createOrder":
 		if e.complexity.Mutation.CreateOrder == nil {
 			break
@@ -164,18 +176,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.complexity.Mutation.CreateProduct(childComplexity, args["product"].(ProductInput)), true
-
-	case "Mutation.createdAccount":
-		if e.complexity.Mutation.CreatedAccount == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_createdAccount_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.CreatedAccount(childComplexity, args["account"].(AccountInput)), true
 
 	case "Order.createdAt":
 		if e.complexity.Order.CreatedAt == nil {
@@ -421,6 +421,34 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
+func (ec *executionContext) field_Mutation_createAccount_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Mutation_createAccount_argsAccount(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["account"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_createAccount_argsAccount(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (AccountInput, error) {
+	if _, ok := rawArgs["account"]; !ok {
+		var zeroVal AccountInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("account"))
+	if tmp, ok := rawArgs["account"]; ok {
+		return ec.unmarshalNAccountInput2githubᚗcomᚋVivianRMSᚋgoᚑecommerceᚑmicroᚋgraphqlᚐAccountInput(ctx, tmp)
+	}
+
+	var zeroVal AccountInput
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Mutation_createOrder_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -474,34 +502,6 @@ func (ec *executionContext) field_Mutation_createProduct_argsProduct(
 	}
 
 	var zeroVal ProductInput
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Mutation_createdAccount_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := ec.field_Mutation_createdAccount_argsAccount(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["account"] = arg0
-	return args, nil
-}
-func (ec *executionContext) field_Mutation_createdAccount_argsAccount(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (AccountInput, error) {
-	if _, ok := rawArgs["account"]; !ok {
-		var zeroVal AccountInput
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("account"))
-	if tmp, ok := rawArgs["account"]; ok {
-		return ec.unmarshalNAccountInput2githubᚗcomᚋVivianRMSᚋgoᚑecommerceᚑmicroᚋgraphqlᚐAccountInput(ctx, tmp)
-	}
-
-	var zeroVal AccountInput
 	return zeroVal, nil
 }
 
@@ -920,8 +920,8 @@ func (ec *executionContext) fieldContext_Account_orders(_ context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_createdAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_createdAccount(ctx, field)
+func (ec *executionContext) _Mutation_createAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createAccount(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -934,7 +934,7 @@ func (ec *executionContext) _Mutation_createdAccount(ctx context.Context, field 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreatedAccount(rctx, fc.Args["account"].(AccountInput))
+		return ec.resolvers.Mutation().CreateAccount(rctx, fc.Args["account"].(AccountInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -948,7 +948,7 @@ func (ec *executionContext) _Mutation_createdAccount(ctx context.Context, field 
 	return ec.marshalOAccount2ᚖgithubᚗcomᚋVivianRMSᚋgoᚑecommerceᚑmicroᚋgraphqlᚐAccount(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_createdAccount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_createAccount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -973,7 +973,7 @@ func (ec *executionContext) fieldContext_Mutation_createdAccount(ctx context.Con
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createdAccount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_createAccount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -4175,9 +4175,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
-		case "createdAccount":
+		case "createAccount":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createdAccount(ctx, field)
+				return ec._Mutation_createAccount(ctx, field)
 			})
 		case "createProduct":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
