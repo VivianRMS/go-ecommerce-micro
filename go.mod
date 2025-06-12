@@ -6,12 +6,12 @@ require (
 	github.com/99designs/gqlgen v0.17.74
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/lib/pq v1.10.9
+	github.com/olivere/elastic/v7 v7.0.12
 	github.com/segmentio/ksuid v1.0.4
 	github.com/tinrab/retry v1.0.0
 	github.com/vektah/gqlparser/v2 v2.5.27
 	google.golang.org/grpc v1.73.0
 	google.golang.org/protobuf v1.36.6
-	gopkg.in/olivere/elastic.v5 v5.0.86
 )
 
 require (

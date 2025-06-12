@@ -4,11 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"github.com/lib/pq"
+	"log"
 )
 
 type Repository interface {
 	Close()
-	PurOrder(ctx context.Context, o Order) error
+	PutOrder(ctx context.Context, o Order) error
 	GetOrdersForAccount(ctx context.Context, accountID string) ([]Order, error)
 }
 
@@ -36,7 +37,7 @@ func (r *postgresRepository) Close() {
 	r.db.Close()
 }
 
-func (r *postgresRepository) PurOrder(ctx context.Context, o Order) error {
+func (r *postgresRepository) PutOrder(ctx context.Context, o Order) error {
 	tx, err := r.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
@@ -124,6 +125,7 @@ func (r *postgresRepository) GetOrdersForAccount(ctx context.Context, accountID 
 				TotalPrice: lastOrder.TotalPrice,
 				Products:   products,
 			}
+			log.Println("get", newOrder.CreatedAt)
 			orders = append(orders, newOrder)
 			products = []OrderedProduct{}
 		}

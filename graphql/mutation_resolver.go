@@ -2,9 +2,14 @@ package main
 
 import (
 	"context"
+	"errors"
 	"github.com/VivianRMS/go-ecommerce-micro/order"
 	"log"
 	"time"
+)
+
+var (
+	ErrInvalidParameter = errors.New("invalid parameter")
 )
 
 type mutationResolver struct {
@@ -40,8 +45,8 @@ func (r *mutationResolver) CreateProduct(ctx context.Context, in ProductInput) (
 	return &Product{
 		ID:          p.ID,
 		Name:        p.Name,
-		Price:       p.Price,
 		Description: p.Description,
+		Price:       p.Price,
 	}, nil
 }
 
@@ -51,12 +56,14 @@ func (r *mutationResolver) CreateOrder(ctx context.Context, in OrderInput) (*Ord
 
 	var products []order.OrderedProduct
 	for _, p := range in.Products {
+		if p.Quantity <= 0 {
+			return nil, ErrInvalidParameter
+		}
 		products = append(products, order.OrderedProduct{
 			ID:       p.ID,
 			Quantity: uint32(p.Quantity),
 		})
 	}
-
 	o, err := r.server.orderClient.PostOrder(ctx, in.AccountID, products)
 	if err != nil {
 		log.Println(err)

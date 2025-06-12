@@ -149,6 +149,7 @@ func (s *grpcServer) GetOrdersForAccount(ctx context.Context, r *pb.GetOrdersFor
 			Products:   []*pb.Order_OrderProduct{},
 		}
 		op.CreatedAt, _ = o.CreatedAt.MarshalBinary()
+		//log.Println("get", op.CreatedAt)
 		for _, product := range o.Products {
 			for _, p := range products {
 				if product.ID == p.ID {

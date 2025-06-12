@@ -4,7 +4,7 @@ import (
 	"context"
 	pb "github.com/VivianRMS/go-ecommerce-micro/order/gen/go/order/v1"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	"log"
 	"time"
 )
 
@@ -14,10 +14,7 @@ type Client struct {
 }
 
 func NewClient(url string) (*Client, error) {
-	opts := []grpc.DialOption{
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-	}
-	conn, err := grpc.NewClient(url, opts...)
+	conn, err := grpc.Dial(url, grpc.WithInsecure())
 	if err != nil {
 		return nil, err
 	}
@@ -41,14 +38,18 @@ func (c *Client) PostOrder(
 			Quantity:  p.Quantity,
 		})
 	}
-	r, err := c.service.PostOrder(ctx, &pb.PostOrderRequest{
-		AccountId: accountID,
-		Products:  protoProducts,
-	})
+	r, err := c.service.PostOrder(
+		ctx,
+		&pb.PostOrderRequest{
+			AccountId: accountID,
+			Products:  protoProducts,
+		},
+	)
 	if err != nil {
 		return nil, err
 	}
 
+	// Create response order
 	newOrder := r.Order
 	newOrderCreatedAt := time.Time{}
 	newOrderCreatedAt.UnmarshalBinary(newOrder.CreatedAt)
@@ -60,7 +61,6 @@ func (c *Client) PostOrder(
 		AccountID:  newOrder.AccountId,
 		Products:   products,
 	}, nil
-
 }
 
 func (c *Client) GetOrdersForAccount(ctx context.Context, accountID string) ([]Order, error) {
@@ -68,21 +68,23 @@ func (c *Client) GetOrdersForAccount(ctx context.Context, accountID string) ([]O
 		AccountId: accountID,
 	})
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 
+	// Create response orders
 	orders := []Order{}
-	for _, op := range r.Orders {
+	for _, orderProto := range r.Orders {
 		newOrder := Order{
-			ID:         op.Id,
-			TotalPrice: op.TotalPrice,
-			AccountID:  op.AccountId,
+			ID:         orderProto.Id,
+			TotalPrice: orderProto.TotalPrice,
+			AccountID:  orderProto.AccountId,
 		}
-		newOrderCreatedAt := time.Time{}
-		newOrderCreatedAt.UnmarshalBinary(op.CreatedAt)
+		newOrder.CreatedAt = time.Time{}
+		newOrder.CreatedAt.UnmarshalBinary(orderProto.CreatedAt)
 
 		products := []OrderedProduct{}
-		for _, p := range op.Products {
+		for _, p := range orderProto.Products {
 			products = append(products, OrderedProduct{
 				ID:          p.Id,
 				Quantity:    p.Quantity,
@@ -92,6 +94,7 @@ func (c *Client) GetOrdersForAccount(ctx context.Context, accountID string) ([]O
 			})
 		}
 		newOrder.Products = products
+
 		orders = append(orders, newOrder)
 	}
 	return orders, nil

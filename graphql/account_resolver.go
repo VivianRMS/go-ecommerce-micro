@@ -22,13 +22,14 @@ func (r *accountResolver) Orders(ctx context.Context, obj *Account) ([]*Order, e
 
 	var orders []*Order
 	for _, o := range orderList {
+		log.Println(o.AccountID, o.CreatedAt)
 		var products []*OrderedProduct
 		for _, p := range o.Products {
 			products = append(products, &OrderedProduct{
 				ID:          p.ID,
 				Name:        p.Name,
-				Price:       p.Price,
 				Description: p.Description,
+				Price:       p.Price,
 				Quantity:    int(p.Quantity),
 			})
 		}

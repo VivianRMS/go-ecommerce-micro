@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/kelseyhightower/envconfig"
 	"log"
 	"net/http"
+
+	"github.com/99designs/gqlgen/handler"
+	"github.com/kelseyhightower/envconfig"
 )
 
 type AppConfig struct {
@@ -26,8 +26,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	http.Handle("/graphql", handler.New(s.ToExecutableSchema()))
-	http.Handle("/playground", playground.Handler("kunlin", "/graphql"))
+	http.Handle("/graphql", handler.GraphQL(s.ToExecutableSchema()))
+	http.Handle("/playground", handler.Playground("playground", "/graphql"))
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
