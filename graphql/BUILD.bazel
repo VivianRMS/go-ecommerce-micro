@@ -1,0 +1,35 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "graphql_lib",
+    srcs = [
+        "account_resolver.go",
+        "generated.go",
+        "graph.go",
+        "main.go",
+        "models.go",
+        "models_gen.go",
+        "mutation_resolver.go",
+        "query_resolver.go",
+    ],
+    embedsrcs = ["schema.graphql"],
+    importpath = "github.com/VivianRMS/go-ecommerce-micro/graphql",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//account",
+        "//catalog",
+        "//order",
+        "@com_github_99designs_gqlgen//graphql",
+        "@com_github_99designs_gqlgen//graphql/introspection",
+        "@com_github_99designs_gqlgen//handler",
+        "@com_github_kelseyhightower_envconfig//:envconfig",
+        "@com_github_vektah_gqlparser_v2//:gqlparser",
+        "@com_github_vektah_gqlparser_v2//ast",
+    ],
+)
+
+go_binary(
+    name = "graphql",
+    embed = [":graphql_lib"],
+    visibility = ["//visibility:public"],
+)

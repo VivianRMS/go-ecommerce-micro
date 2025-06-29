@@ -1,0 +1,19 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "order_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/VivianRMS/go-ecommerce-micro/order/cmd/order",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//order",
+        "@com_github_kelseyhightower_envconfig//:envconfig",
+        "@com_github_tinrab_retry//:retry",
+    ],
+)
+
+go_binary(
+    name = "order",
+    embed = [":order_lib"],
+    visibility = ["//visibility:public"],
+)

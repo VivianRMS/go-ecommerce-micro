@@ -1,0 +1,22 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_go//proto:def.bzl", "go_proto_library", "go_grpc_library")
+
+proto_library(
+    name = "account_proto",
+    srcs = ["account.proto"],
+    visibility = ["//visibility:public"],
+)
+
+go_proto_library(
+    name = "account_go_proto",
+    importpath = "github.com/VivianRMS/go-ecommerce-micro/account/gen/go/account/v1",
+    proto = ":account_proto",
+    visibility = ["//visibility:public"],
+)
+
+go_grpc_library(
+    name = "account_go_grpc",
+    importpath = "github.com/VivianRMS/go-ecommerce-micro/account/gen/go/account/v1",
+    proto = ":account_proto",
+    visibility = ["//visibility:public"],
+)

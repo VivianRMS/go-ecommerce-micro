@@ -1,0 +1,17 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "order",
+    srcs = glob(["*.go"]),
+    importpath = "github.com/VivianRMS/go-ecommerce-micro/order",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//account",
+        "//catalog",
+        "//order/order/v1:order_go_grpc",
+        "@com_github_lib_pq//:pq",
+        "@com_github_segmentio_ksuid//:ksuid",
+        "@org_golang_google_grpc//:grpc",
+        "@org_golang_google_grpc//reflection",
+    ],
+)

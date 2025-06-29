@@ -1,0 +1,16 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "catalog",
+    srcs = glob(["*.go"]),
+    importpath = "github.com/VivianRMS/go-ecommerce-micro/catalog",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//catalog/catalog/v1:catalog_go_grpc",
+        "@com_github_olivere_elastic_v7//:elastic",
+        "@com_github_segmentio_ksuid//:ksuid",
+        "@org_golang_google_grpc//:grpc",
+        "@org_golang_google_grpc//credentials/insecure",
+        "@org_golang_google_grpc//reflection",
+    ],
+)
