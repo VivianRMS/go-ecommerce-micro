@@ -6,18 +6,28 @@
 Service: `/account`
 
 Database: PostgreSQL
+
+Tool: `buf`, `direnv`
+
 ### Catalog Service
 Service: `/catalog`
 
 Database: ElasticSearch
+
+Tool: `buf`, `direnv`
+
 ### Order Service
 Service: `/order`
 
 Database: PostgreSQL
+
+Tool: `buf`, `direnv`
+
 ## GraphQL Gateway
 Service: `/graphql`
 
 Tool: `gqlgen`
+
 ## Docker Containerization
 `docker-compose.yaml`
 
