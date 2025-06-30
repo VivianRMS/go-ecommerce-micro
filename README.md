@@ -49,6 +49,9 @@ Server: `/catalog/cmd/catalog/BUILD.bazel`
 
 Library: `/catalog/BUILD.bazel`
 
+### GraphQL
+`/graphql/BUILD.bazel`
+
 ## Docker with Bazel
 
 ### Top-level
@@ -62,3 +65,6 @@ Library: `/catalog/BUILD.bazel`
 
 ### Catalog Service
 `/catalog/Dockerfile`, `/catalog/docker_build.sh`
+
+### GraphQL
+`/graphql/Dockerfile`, `/graphql/docker_build.sh`
