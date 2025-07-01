@@ -1,0 +1,5 @@
+# filegroup(
+#     name = "ruby_proto_files",
+#     srcs = glob(["**/*.rb"]),
+#     visibility = ["//visibility:public"],
+# )

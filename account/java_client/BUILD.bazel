@@ -1,0 +1,15 @@
+load("@rules_java//java:defs.bzl", "java_binary")
+
+java_binary(
+    name = "java_account_client",
+    srcs = ["JavaClient.java"],
+    deps = [
+        "//account/account/v1:account_java_proto",
+        "//account/account/v1:account_java_grpc",
+        "@maven//:io_grpc_grpc_netty_shaded",
+        "@maven//:io_grpc_grpc_stub",
+        "@maven//:io_grpc_grpc_protobuf",
+        "@maven//:com_google_protobuf_protobuf_java",
+    ],
+    main_class = "account.java_client.JavaClient",  # Adjust as needed
+)

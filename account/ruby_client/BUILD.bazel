@@ -1,0 +1,9 @@
+# load("@rules_ruby//ruby:defs.bzl", "rb_binary")
+#
+# rb_binary(
+#     name = "ruby_client",
+#     srcs = ["main.rb"],
+#     data = ["//account/gen/ruby:ruby_proto_files"],
+#     deps = [],
+#     target_compatible_with = ["@platforms//os:macos"],
+# )

@@ -7,8 +7,13 @@ bazel_dep(name = "rules_go", version = "0.55.1")
 bazel_dep(name = "gazelle", version = "0.44.0")
 bazel_dep(name = "rules_proto", version = "7.1.0")
 
-bazel_dep(name = "platforms", version = "0.0.8")
+bazel_dep(name = "rules_java", version = "8.13.0")
+bazel_dep(name = "rules_proto_grpc_java", version = "5.3.0")
 
+# java = use_extension("@rules_java//java:extensions.bzl", "java")
+# java.register_toolchains()
+
+bazel_dep(name = "platforms", version = "0.0.8")
 
 go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk")
 go_sdk.download(version = "1.23.1")
@@ -18,3 +23,27 @@ go_deps.from_file(go_mod = "//:go.mod")
 use_repo(go_deps, "com_github_99designs_gqlgen", "com_github_kelseyhightower_envconfig", "com_github_lib_pq", "com_github_olivere_elastic_v7", "com_github_segmentio_ksuid", "com_github_tinrab_retry", "com_github_vektah_gqlparser_v2", "org_golang_google_grpc", "org_golang_google_protobuf")
 
 bazel_dep(name = "bazel_skylib", version = "1.7.1")
+
+# bazel_dep(name = "rules_ruby", version = "0.19.0")
+# ruby = use_extension("@rules_ruby//ruby:extensions.bzl", "ruby")
+# ruby.toolchain(
+#     name = "ruby",
+#     version = "3.0.6",
+# )
+# use_repo(ruby, "ruby_toolchains")
+# use_repo(ruby, "ruby")
+# register_toolchains("@ruby_toolchains//:all")
+
+bazel_dep(name = "rules_jvm_external", version = "5.3")
+
+maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
+maven.install(
+    artifacts = [
+        "io.grpc:grpc-netty-shaded:1.64.0",
+        "io.grpc:grpc-stub:1.64.0",
+        "io.grpc:grpc-protobuf:1.64.0",
+        "com.google.protobuf:protobuf-java:3.25.3",
+    ],
+    repositories = ["https://repo1.maven.org/maven2"],
+)
+use_repo(maven, "maven")

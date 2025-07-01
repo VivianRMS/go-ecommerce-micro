@@ -3,6 +3,8 @@ version: "3.7"
 services:
   account:
     image: account:latest
+    ports:
+      - "8080:8080"
     depends_on:
       - account_db
     environment:
@@ -30,7 +32,7 @@ services:
   graphql:
     image: graphql:latest
     ports:
-      - 8000:8080
+      - "8000:8080"
     depends_on:
       - account
       - catalog
