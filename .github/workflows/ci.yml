@@ -6,7 +6,6 @@ on:
     paths:
       - "**.proto"
       - "**/*.go"
-      - "**/*.bazel"
       - ".github/workflows/ci.yml"
   pull_request:
 
