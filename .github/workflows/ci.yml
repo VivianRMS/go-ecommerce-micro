@@ -30,11 +30,11 @@ jobs:
       - name: Build all Bazel targets
         run: bazel build //...
 
-      - name: Show git diff output
+      - name: Check for file diffs
         run: |
-          echo "==== BEGIN GIT DIFF ===="
           git diff
-          echo "==== END GIT DIFF ===="
+          git diff --exit-code
+          echo "Diff exit code: $?"
 
       - name: Run Go tests
         run: go test ./... -v
