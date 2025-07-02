@@ -1,0 +1,54 @@
+name: CI - Protobuf Compatibility & Build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**.proto"
+      - "**/*.go"
+      - ".github/workflows/ci.yml"
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - uses: bazel-contrib/setup-bazel@0.15.0
+      name: Set up Bazel
+      with:
+        # Avoid downloading Bazel every time.
+        bazelisk-cache: true
+        # Store build cache per workflow.
+        disk-cache: ${{ github.workflow }}
+        # Share repository cache between workflows.
+        repository-cache: true
+
+    - name: Build all Bazel targets
+      run: bazel build //...
+
+    - name: Run Go tests
+      run: go test ./... -v
+
+    - name: Check if generated files are stale
+      run: |
+        git diff --exit-code || (echo "Generated files are out-of-date!" && exit 1)
+
+    - name: (Optional) Run buf lint
+      run: |
+        if command -v buf > /dev/null; then
+          buf lint
+        fi
+
+    - name: (Optional) Check for breaking changes
+      run: |
+        if command -v buf > /dev/null; then
+          buf breaking --against .git#branch=main
+        fi
+
+
+
+
