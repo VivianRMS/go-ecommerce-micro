@@ -1,0 +1,15 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "schema_diff_lib",
+    srcs = ["diff/diff.go"],
+    importpath = "github.com/VivianRMS/go-ecommerce-micro/tools/schema-diff/diff",
+    visibility = ["//visibility:private"],
+    deps = ["@com_github_jhump_protoreflect//desc/protoparse"]
+)
+
+go_binary(
+    name = "schema_diff",
+    srcs = ["main.go"],
+    deps = [":schema_diff_lib"],
+)
